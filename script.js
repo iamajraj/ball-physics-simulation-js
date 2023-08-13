@@ -107,3 +107,46 @@ createBall();
 createBall();
 
 animate();
+
+let selectedBall = null;
+
+canvas.addEventListener('mousedown', (event) => {
+  const mouseX = event.clientX - canvas.getBoundingClientRect().left;
+  const mouseY = event.clientY - canvas.getBoundingClientRect().top;
+
+  // Check if user clicked on an existing ball
+  selectedBall = balls.find((ball) => {
+    const dx = mouseX - ball.x;
+    const dy = mouseY - ball.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    return distance < ball.radius;
+  });
+
+  if (!selectedBall) {
+    // Create a new ball at the click position
+    const newBall = new Ball(
+      mouseX,
+      mouseY,
+      Math.random() * 20 + 10,
+      getRandomColor()
+    );
+    balls.push(newBall);
+  }
+});
+
+canvas.addEventListener('mousemove', (event) => {
+  if (selectedBall) {
+    selectedBall.x = event.clientX - canvas.getBoundingClientRect().left;
+    selectedBall.y = event.clientY - canvas.getBoundingClientRect().top;
+  }
+});
+
+canvas.addEventListener('mouseup', () => {
+  selectedBall = null;
+});
+
+function getRandomColor() {
+  return `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${
+    Math.random() * 255
+  })`;
+}
